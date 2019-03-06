@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css"/>
+    <script type="text/javascript" src="js/jquery2.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/ckform.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+
+    <link href="http://cdn.javaex.cn/javaex/pc/css/icomoon.css" rel="stylesheet"/>
+    <link href="http://cdn.javaex.cn/javaex/pc/css/animate.css" rel="stylesheet"/>
+    <link href="http://cdn.javaex.cn/javaex/pc/css/common.css" rel="stylesheet"/>
+    <link href="http://cdn.javaex.cn/javaex/pc/css/skin/tina.css" rel="stylesheet"/>
+    <script src="js/jquery-3.3.1.js" type="text/javascript"></script>
+    <script src="http://cdn.javaex.cn/javaex/pc/js/common.js"></script>
+    <script src="http://cdn.javaex.cn/javaex/pc/js/javaex.min.js"></script>
+    <script src="http://cdn.javaex.cn/javaex/pc/js/javaex-formVerify.js"></script>
+
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            padding-bottom: 40px;
+            background-color: #e9e7ef;
+        }
+
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media ( max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+
+        function fullTbody(documents) {
+            for (var i = 0; i < documents.length; i++) {
+                var tr = $("<tr></tr>");
+                var checkbox = $("<td><input type='checkbox' name='follow'/></td>");
+                var nameTD = $("<td>" + documents[i].name + "</td>");
+                var kindTD = $("<td>" + documents[i].kind.bigName+ "-" + documents[i].kind.smallName+ "</td>");
+                var uploadNameTD = $("<td></td>");
+                var nicknameURI = $("<a>" + documents[i].uploadUser.username+ "</a>");
+                //处理超链接
+                nicknameURI.attr("href","/userDetail?username="+documents[i].uploadUser.username+"&userType="+documents[i].uploadUser.userType);
+                uploadNameTD.append(nicknameURI);
+                var uploadTimeTD = $("<td>" + documents[i].uploadDate + "</td>");
+                var deleteTD = $("<td><button name='delete' id='delete-" + documents[i].id + "'>删除</button></td>");
+                tr.append(checkbox);
+                tr.append(nameTD);
+                tr.append(kindTD);
+                tr.append(uploadNameTD);
+                tr.append(uploadTimeTD);
+                tr.append(deleteTD);
+
+                $("tbody").append(tr);
+
+                deleteDocument($("#delete-" + documents[i].id));
+            }
+        }
+    </script>
+
+</head>
+<body>
+<font color="#777777"><strong>文档名称：</strong></font>
+<input type="text" name="menuname" id="menuname" class="abc input-default">&nbsp;&nbsp;
+<button class="btn btn-primary">查询</button>
+&nbsp;&nbsp;
+<button type="button" id="addnew">
+    <a href="documentAdd.html">添加文档</a>
+</button>
+
+<table class="table table-bordered table-hover definewidth m10">
+    <thead>
+
+    </thead>
+
+    <tbody>
+
+
+    </tbody>
+
+
+</table>
+
+</body>
+<script>
+    var thead = $("thead");
+    var tbody = $("tbody");
+    //ajax
+    $.post("getAllDocuments", function (documents) {
+        var tr = $("<tr></tr>");
+        tr.html("<th><input type='checkbox' id='allCheck'/></th><th>文档名称</th><th>分类</th><th>上传者</th><th>上传日期</th><th>管理菜单</th>");
+        thead.append(tr);
+        fullSysnc();
+        //生成表体函数
+        fullTbody(documents);
+    });
+
+
+    $(".btn-primary").click(function () {
+        //获取输入框的值
+        var menuname = $("#menuname").val();
+
+        //ajax
+        $.ajax({
+            url: "/MOOCProject/showDocumentByNameAction",
+            type: "get",
+            data: "name=" + menuname,
+            success: function (documents) {
+                alert(documents);
+                //先清空tbody
+                $("tbody").empty();
+
+                fullTbody(documents);
+            },
+            dataType: "json"
+        });
+    });
+
+    function deleteDocument(btn) {
+        btn.click(function () {
+            if (confirm("你确定要删除数据?")) {
+                $.get("deleteDocumentAction", {"id": btn.attr('id')}, function () {
+                    //移除当前行
+                    btn.parent().parent().remove();
+                    javaex.message({
+                        content: "操作成功",
+                        type: "success"
+                    });
+                });
+            }
+        });
+    }
+
+
+    function fullSysnc() {
+        $("#allCheck").click(function () {
+            //保存自己的状态  --- 布尔类型的变量
+            var state = this.checked;
+
+            //选择待同步的多选框
+            $("input[name='follow']").each(function () {
+                this.checked = state;
+            });
+        });
+    }
+</script>
+
+</html>

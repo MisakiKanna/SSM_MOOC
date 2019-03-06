@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/ckform.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/showdate.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            padding-bottom: 40px;
+            background-color: #e9e7ef;
+            font-size: 17px;
+        }
+
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+</head>
+<h3><strong>基本信息：</strong></h3>
+<table class="table table-condensed">
+    <tr>
+        <td width="18%" height="30" align="center">用 户 名：</td>
+        <td width="82%" class="word_grey" id="nickname"></td>
+    </tr>
+    <tr>
+        <td width="18%" height="30" align="center">真实姓名：</td>
+        <td width="82%" class="word_grey" id="name"></td>
+    </tr>
+    <tr>
+        <td height="28" align="center">密&nbsp;&nbsp;&nbsp;&nbsp;码：</td>
+        <td height="28">******</td>
+    </tr>
+    <tr>
+        <td height="28" align="center">用户类型：</td>
+        <td height="28" id="userType">学生</td>
+    </tr>
+    <tr>
+        <td height="28" align="center">E-mail：</td>
+        <td height="28" id="email"></td>
+    </tr>
+
+    <tr>
+        <td height="28" align="center">创建时间：</td>
+        <td height="28" id="createTime"></td>
+    </tr>
+</table>
+<h3><strong>操作记录：</strong></h3><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<strong>浏览记录：</strong>
+
+<table class="table table-condensed" id="visit">
+    <tr>
+        <td class="word_grey">序号 &nbsp;</td>
+        <td class="word_grey">操作对象 &nbsp;</td>
+        <td class="word_grey">操作时间 &nbsp;</td>
+    </tr>
+</table>
+<!--/////////////////////////////////////-->
+&nbsp;&nbsp;&nbsp;&nbsp; <strong>下载记录：</strong>
+
+<table class="table table-condensed" id="download">
+    <tr>
+
+        <td class="word_grey">序号</td>
+        <td class="word_grey">下载对象</td>
+        <td class="word_grey">下载时间</td>
+    </tr>
+</table>
+<!--/////////////////////////////////////-->
+&nbsp;&nbsp;&nbsp;&nbsp;
+<strong>上传记录：</strong>
+
+<table class="table table-condensed" id="upload">
+    <tr>
+
+        <td class="word_grey">序号</td>
+        <td class="word_grey">上传对象</td>
+        <td class="word_grey">上传时间</td>
+    </tr>
+</table>
+</body>
+
+<script type="text/javascript">
+    //生成用户信息
+    function createUserInfo(data) {
+        $("#nickname").text(data.nickname);
+        $("#name").text(data.name);
+        $("#email").text(data.email);
+        $("#createTime").text(data.createTime);
+    }
+
+
+    //生成tr
+    function createTable(data) {
+        var operations = data.operations;
+
+        var a = 1;
+        var b = 1;
+        var c = 1;
+
+        for (var i = 0; i < operations.length; i++) {
+            var tr = $("<tr></tr>");
+
+            var nameTD = $("<td class='word_grey'>" + operations[i].name + "</td>");
+            var timeTD = $("<td class='word_grey'>" + operations[i].time + "</td>");
+            tr.append(nameTD);
+            tr.append(timeTD);
+            //判断类型
+            if (operations[i].type == 1) {
+                var numberTD = $("<td class='word_grey'>" + a + "</td>");
+                numberTD.insertBefore(nameTD);
+                $("#visit").append(tr);
+                a++;
+            } else if (operations[i].type == 2) {
+                var numberTD = $("<td class='word_grey'>" + b + "</td>");
+                numberTD.insertBefore(nameTD);
+                $("#download").append(tr);
+                b++;
+            } else if (operations[i].type == 3){
+                var numberTD = $("<td class='word_grey'>" + c + "</td>");
+                numberTD.insertBefore(nameTD);
+                $("#upload").append(tr);
+                c++;
+            }
+        }
+    }
+
+    $.post("getUserInfo", function (data) {
+        createUserInfo(data);
+        createTable(data);
+    });
+</script>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qfedu.mapper.DocumentDao">
+
+    <resultMap id="userinfoPro" type="userInfo">
+        <id column="username" property="username"></id>
+        <result column="nickname" property="nickname"></result>
+        <result column="userType" property="userType"></result>
+    </resultMap>
+
+    <resultMap id="classifyPro" type="classify">
+        <id column="id" property="id"></id>
+        <result column="bigName" property="bigName"></result>
+        <result column="smallName" property="smallName"></result>
+    </resultMap>
+
+
+    <resultMap id="documentPro" type="document">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="key" property="key"></result>
+        <result column="url" property="url"></result>
+        <result column="summary" property="summary"></result>
+        <result column="uploadDate" property="uploadDate"></result>
+
+        <!--一对一-->
+        <association property="kind" column="kind" javaType="classify" resultMap="classifyPro"></association>
+        <association property="uploadUser" column="uploadUser" javaType="userInfo" resultMap="userinfoPro"></association>
+    </resultMap>
+
+    <select id="selectAllDocument" resultMap="documentPro">
+        select d.*,c.bigName,c.smallName,u.* from document d,userinfo u,classify c
+        where d.uploadUser = u.username and d.kind = c.id;
+    </select>
+
+</mapper>
