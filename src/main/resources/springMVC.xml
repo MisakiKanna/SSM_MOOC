@@ -14,4 +14,12 @@
     <!--配置注解驱动-->
     <mvc:annotation-driven></mvc:annotation-driven>
 
+    <!--配置文件上传的bean-->
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" name="multipartResolver">
+        <property name="defaultEncoding" value="utf-8"></property>
+        <!--文件上传的临时路径-->
+        <property name="uploadTempDir" value="file:/f:/tempFile"></property>
+        <!--文件上传大小-->
+        <property name="maxUploadSize" value="955330000000"></property>
+    </bean>
 </beans>

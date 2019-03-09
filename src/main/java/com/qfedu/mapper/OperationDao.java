@@ -10,4 +10,7 @@ import java.util.List;
 @Repository
 public interface OperationDao {
     public UserInfo selectOperationsByUsername(String username) throws Exception;
+
+
+    public List<UserInfo> selectCountByInfo(Integer type) throws Exception;
 }

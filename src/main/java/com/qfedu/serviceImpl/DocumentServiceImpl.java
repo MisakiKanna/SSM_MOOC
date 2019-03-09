@@ -1,11 +1,17 @@
 package com.qfedu.serviceImpl;
 
+import com.qfedu.domain.Classify;
 import com.qfedu.domain.Document;
+import com.qfedu.domain.DocumentAdd;
+import com.qfedu.mapper.ClassIfyDao;
 import com.qfedu.mapper.DocumentDao;
 import com.qfedu.service.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +20,9 @@ import java.util.List;
 public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private DocumentDao documentDao;
+
+    @Autowired
+    private ClassIfyDao classIfyDao;
 
 
     @Override
@@ -45,5 +54,23 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         return documents;
+    }
+
+    @Override
+    public void addDocument(DocumentAdd documentAdd, MultipartFile file) throws Exception {
+
+        String path = "/save"+file.getOriginalFilename();
+
+        file.transferTo(new File(path));
+
+        Integer integer = classIfyDao.selectClassifyByKind(documentAdd.getKind());
+
+        documentAdd.setUrl(path).setUploadDate(new Date());
+        documentAdd.setUploadUserName("zhangsan").setKindNumber(integer);
+
+
+        System.out.println(documentAdd);
+        //调用dao存储
+        documentDao.insertDocument(documentAdd);
     }
 }

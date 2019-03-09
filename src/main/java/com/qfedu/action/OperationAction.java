@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Controller
 public class OperationAction {
@@ -23,4 +24,16 @@ public class OperationAction {
 
         return userInfo;
     }
+
+    @RequestMapping("getCountByInfo")
+    @ResponseBody
+    public Map<String, Integer> getCountByInfo(Integer type) throws Exception {
+        Map<String, Integer> map = operationService.getCountByInfo(type);
+
+        System.out.println(map);
+
+        return map;
+    }
+
+
 }

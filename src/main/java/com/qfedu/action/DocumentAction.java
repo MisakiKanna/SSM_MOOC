@@ -1,6 +1,7 @@
 package com.qfedu.action;
 
 import com.qfedu.domain.Document;
+import com.qfedu.domain.DocumentAdd;
 import com.qfedu.service.DocumentService;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,6 +35,14 @@ public class DocumentAction {
     public void deleteDocument(String id) throws Exception{
         int idNumber  = Integer.parseInt(id.split("-")[1]);
        documentService.removeDocumentsById(idNumber);
+    }
+
+
+    @RequestMapping(value = "addDocument")
+    public String addDocument(DocumentAdd documentAdd, MultipartFile file) throws Exception{
+        documentService.addDocument(documentAdd,file);
+
+        return "/index.jsp";
     }
 
 }

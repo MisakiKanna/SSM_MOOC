@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script type="text/javascript" src="js/echarts.min.js"></script>
+    <script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+    <style type="text/css">
+        div{
+            width: 1000px;
+            height: 700px;
+        }
+    </style>
+</head>
+<body>
+    <!--统计所有人的浏览量,柱状图-->
+    <button id="visitNumber">浏览量统计</button>
+
+    <div id="visitDiv">
+
+    </div>
+</body>
+
+<script type="text/javascript">
+    $("#visitNumber").click(function () {
+        var visitDiv = echarts.init(document.getElementById("visitDiv"));
+        $.get("getCountByInfo",{"type":1},function (data) {
+            //设置
+            var xAxisData  = [];
+            var seriesData  = [];
+
+            var i = 0;
+
+            for (var key in data) {
+                xAxisData[i] =key;
+                seriesData[i] =data[key];
+                i++;
+            }
+
+
+            var options = {
+                title:{text:'用户浏览文档统计图'},
+                tooltip:{},
+                toolbox:{ feature:{ dataZoom:{},dataView:{}, saveAsImage:{}}},
+                legend:{
+                    data:'数量'
+                },
+                xAxis:{
+                    data:xAxisData
+                },
+                yAxis:{},
+                series:[{
+                    name:'数量',
+                    type:'bar',
+                    data:seriesData
+                }]
+            };
+            visitDiv.setOption(options);
+        })
+    });
+
+</script>
+</html>

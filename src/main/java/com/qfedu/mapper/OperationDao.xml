@@ -29,4 +29,9 @@
       select u.*,o.* from userinfo u left join operation o
       on u.username = o.username where u.username = #{username};
     </select>
+
+
+    <select id="selectCountByInfo" resultMap="userinfoPro" parameterType="integer">
+        select * from userinfo u LEFT JOIN operation o on u.username = o.username WHERE o.type = #{type} or ISNULL(o.name);
+    </select>
 </mapper>
